@@ -1,0 +1,53 @@
+[
+  {
+    "categoria": "Entradas",
+    "platos": [
+      {
+        "nombre": "Kimchi",
+        "precio": 5.99,
+        "descripcion": "Col fermentada con especias coreanas.",
+        "alergenos": ["soja"]
+      },
+      {
+        "nombre": "Buchimgae",
+        "precio": 7.99,
+        "descripcion": "Tortilla coreana de vegetales.",
+        "alergenos": ["huevo", "trigo"]
+      }
+    ]
+  },
+  {
+    "categoria": "Platos principales",
+    "platos": [
+      {
+        "nombre": "Bibimbap",
+        "precio": 12.99,
+        "descripcion": "Arroz con vegetales, carne y huevo.",
+        "alergenos": ["huevo", "soja"]
+      },
+      {
+        "nombre": "Bulgogi",
+        "precio": 14.99,
+        "descripcion": "Carne marinada a la parrilla.",
+        "alergenos": ["soja", "sésamo"]
+      }
+    ]
+  },
+  {
+    "categoria": "Postres",
+    "platos": [
+      {
+        "nombre": "Hotteok",
+        "precio": 4.99,
+        "descripcion": "Panqueques dulces rellenos de azúcar y nueces.",
+        "alergenos": ["nueces", "trigo"]
+      },
+      {
+        "nombre": "Patbingsu",
+        "precio": 6.99,
+        "descripcion": "Postre de hielo raspado con frijoles dulces.",
+        "alergenos": []
+      }
+    ]
+  }
+]

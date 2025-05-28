@@ -1,0 +1,120 @@
+:root {
+  --accent-color: #b22222; /* Deep red accent color */
+}
+
+.hero {
+  text-align: center;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 50px 20px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  color: #343a40;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.history, .featured-dishes, .contact {
+  padding: 20px;
+  margin: 20px 0;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+.history h2, .featured-dishes h2, .contact h2 {
+  color: var(--accent-color);
+}
+
+.featured-dishes .dish {
+  margin-bottom: 15px;
+}
+
+.featured-dishes .dish h3 {
+  color: var(--accent-color);
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #343a40;
+  color: #ffffff;
+}
+
+footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+footer ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+footer ul li a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+footer ul li a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.card-deck {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.card {
+  border: 1px solid var(--accent-color);
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+.card-body {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.card-body:hover, .card:hover{
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.5s ease;
+  transform: scale(1.05);
+  transition: transform 0.5s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+.contact {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin: 40px;
+  padding: 40px;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.map-container {
+  flex: 1;
+}

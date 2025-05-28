@@ -1,0 +1,195 @@
+Perfecto. Para ayudarte a crear una función de gestión de reservas optimizada para tu app, es importante estructurar la lógica de asignación de mesas de acuerdo con:
+
+1. **Capacidad total del restaurante** (aforo máximo).
+2. **Disponibilidad por tipo de mesa**.
+3. **Rango aceptable de personas por mesa**.
+4. **Optimización**: minimizar el desperdicio de asientos y evitar bloqueos innecesarios de mesas grandes para grupos pequeños.
+
+### Paso 1: Representar las mesas
+
+Podemos modelar cada tipo de mesa con su capacidad y cantidad:
+
+```ts
+const mesas = [
+  { id: "mesa10", capacidad: 10, rango: [8, 10], cantidad: 1 },
+  { id: "mesa8", capacidad: 8, rango: [6, 8], cantidad: 2 },
+  { id: "mesa6", capacidad: 6, rango: [4, 6], cantidad: 2 },
+  { id: "mesa4", capacidad: 4, rango: [2, 4], cantidad: 5 },
+  { id: "mesa2", capacidad: 2, rango: [1, 2], cantidad: 5 }
+];
+```
+
+### Paso 2: Algoritmo de asignación optimizada
+
+Al llegar una solicitud de reserva, se asigna la **mesa más pequeña posible** que pueda recibir al grupo.
+
+Por ejemplo, para un grupo de 5 personas:
+
+* No puede ir en una mesa de 4.
+* La opción óptima sería una mesa de 6.
+
+Para un grupo de 9:
+
+* La única opción viable es la mesa de 10.
+
+### Paso 3: Consideraciones para el desarrollo
+
+* Lleva un **registro dinámico** del estado de ocupación de cada tipo de mesa.
+* Controla el **aforo total**: suma la cantidad de personas reservadas en total y no excedas la capacidad.
+* Si no hay mesas exactas disponibles, puedes ofrecer combinar mesas pequeñas si lo permite el restaurante (ej: 2x2 para 4 personas).
+
+### ¿Qué necesitas que te prepare?
+
+Puedo ayudarte con:
+
+* [ ] Lógica en TypeScript/JavaScript lista para usar en Angular.
+* [ ] Función que reciba un número de personas y devuelva si hay mesa disponible y cuál.
+* [ ] Simulador para probar distintos casos de reservas.
+* [ ] Interface visual para selección de mesas.
+
+¿Con cuál quieres que empecemos?
+
+
+Aquí tienes la **versión completa del servicio como un `@Injectable` de Angular**, lista para integrarse en tu proyecto.
+
+---
+
+### ✅ Archivo: `mesa-reservas.service.ts`
+
+```ts
+import { Injectable } from '@angular/core';
+
+export interface TipoMesa {
+  id: string;
+  capacidad: number;
+  rango: [number, number];
+  cantidad: number;
+  ocupadas: number;
+}
+
+export interface Reserva {
+  personas: number;
+  mesaAsignada?: string;
+  mensaje: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MesaReservasService {
+
+  private aforoMaximo: number = 80; // ajustable según tu restaurante
+
+  private mesas: TipoMesa[] = [
+    { id: "mesa10", capacidad: 10, rango: [8, 10], cantidad: 1, ocupadas: 0 },
+    { id: "mesa8", capacidad: 8, rango: [6, 8], cantidad: 2, ocupadas: 0 },
+    { id: "mesa6", capacidad: 6, rango: [4, 6], cantidad: 2, ocupadas: 0 },
+    { id: "mesa4", capacidad: 4, rango: [2, 4], cantidad: 5, ocupadas: 0 },
+    { id: "mesa2", capacidad: 2, rango: [1, 2], cantidad: 5, ocupadas: 0 }
+  ];
+
+  private totalReservados: number = 0;
+
+  /**
+   * Intenta hacer una reserva optimizada.
+   */
+  reservarMesa(personas: number): Reserva {
+    if (personas < 1) {
+      return { personas, mensaje: "Número de personas inválido." };
+    }
+
+    if (this.totalReservados + personas > this.aforoMaximo) {
+      return { personas, mensaje: "No hay aforo disponible." };
+    }
+
+    for (let tipoMesa of this.mesas) {
+      const [min, max] = tipoMesa.rango;
+      if (
+        personas >= min &&
+        personas <= max &&
+        tipoMesa.ocupadas < tipoMesa.cantidad
+      ) {
+        tipoMesa.ocupadas++;
+        this.totalReservados += personas;
+        return {
+          personas,
+          mesaAsignada: tipoMesa.id,
+          mensaje: `Reserva exitosa en ${tipoMesa.id}`
+        };
+      }
+    }
+
+    return {
+      personas,
+      mensaje: "No hay mesas disponibles para ese número de personas."
+    };
+  }
+
+  /**
+   * Cancela una reserva liberando la mesa y restando del aforo.
+   */
+  cancelarReserva(mesaId: string, personas: number): boolean {
+    const tipoMesa = this.mesas.find(m => m.id === mesaId);
+    if (tipoMesa && tipoMesa.ocupadas > 0) {
+      tipoMesa.ocupadas--;
+      this.totalReservados -= personas;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Devuelve el estado de ocupación actual.
+   */
+  estadoActual() {
+    return {
+      totalReservados: this.totalReservados,
+      aforoDisponible: this.aforoMaximo - this.totalReservados,
+      mesas: this.mesas.map(m => ({
+        id: m.id,
+        disponibles: m.cantidad - m.ocupadas
+      }))
+    };
+  }
+
+  /**
+   * Reinicia todas las reservas (para pruebas o cierre diario).
+   */
+  resetearReservas() {
+    this.totalReservados = 0;
+    this.mesas.forEach(m => m.ocupadas = 0);
+  }
+}
+```
+
+---
+
+### ✅ Cómo usarlo en un componente Angular
+
+```ts
+import { Component } from '@angular/core';
+import { MesaReservasService } from './mesa-reservas.service';
+
+@Component({
+  selector: 'app-reservas',
+  templateUrl: './reservas.component.html'
+})
+export class ReservasComponent {
+  constructor(private reservasService: MesaReservasService) {}
+
+  hacerReserva(personas: number) {
+    const resultado = this.reservasService.reservarMesa(personas);
+    console.log(resultado.mensaje);
+  }
+
+  verEstado() {
+    console.log(this.reservasService.estadoActual());
+  }
+}
+```
+
+---
+
+### ¿Te gustaría que prepare también un componente HTML con formulario para reservar y ver disponibilidad en tiempo real?
+
+Puedo ayudarte con eso en Angular o en otra tecnología frontend que estés usando.

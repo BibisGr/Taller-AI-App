@@ -1,0 +1,20 @@
+<div class="catalogo container">
+  <h2 class="text-center" style="color: var(--accent-color);">Our Menu</h2>
+  <a class="btn btn-primary mb-3" routerLink="/carrito">Go to Cart</a>
+  @for (category of menu; track category)
+  {
+  <div class="category">
+    <h3 style="color: var(--accent-color);">{{ category.categoria }}</h3>
+    <ul>
+      @for(dish of category.platos; track dish){
+      <li>
+        {{ dish.nombre }} - ${{ dish.precio }}
+        <p>{{ dish.descripcion }}</p>
+        <p *ngIf="dish.alergenos.length > 0">Allergens: {{ dish.alergenos.join(', ') }}</p>
+        <button class="btn btn-sm btn-primary" (click)="addToCart(dish.nombre)">Add to Cart</button>
+      </li>
+      }
+    </ul>
+  </div>
+  }
+</div>
